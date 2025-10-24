@@ -1,0 +1,114 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.4
+  name: cronhpas.autoscaling.aiops.com
+spec:
+  group: autoscaling.aiops.com
+  names:
+    kind: CronHPA
+    listKind: CronHPAList
+    plural: cronhpas
+    singular: cronhpa
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - description: 目标工作负载
+      jsonPath: .spec.scaleTargetRef.name
+      name: Target
+      type: string
+    - description: Cron 表达式
+      jsonPath: .spec.jobs[*].schedule
+      name: Schedule
+      type: string
+    - description: 目标副本数
+      jsonPath: .spec.jobs[*].targetSize
+      name: Target Size
+      type: integer
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: |-
+          这是用来控制 additionalPrinterColumns 的注释，用来控制 kubectl get cronhpa 的输出
+          CronHPA is the Schema for the cronhpas API.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CronHPASpec defines the desired state of CronHPA.
+            properties:
+              jobs:
+                items:
+                  properties:
+                    name:
+                      type: string
+                    schedule:
+                      type: string
+                    targetSize:
+                      format: int32
+                      type: integer
+                  required:
+                  - name
+                  - schedule
+                  - targetSize
+                  type: object
+                type: array
+              scaleTargetRef:
+                description: Foo is an example field of CronHPA. Edit cronhpa_types.go
+                  to remove/update
+                properties:
+                  apiVersion:
+                    type: string
+                  kind:
+                    type: string
+                  name:
+                    type: string
+                required:
+                - apiVersion
+                - kind
+                - name
+                type: object
+            required:
+            - jobs
+            - scaleTargetRef
+            type: object
+          status:
+            description: CronHPAStatus defines the observed state of CronHPA.
+            properties:
+              currentReplicas:
+                description: |-
+                  INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
+                  Important: Run "make" to regenerate code after modifying this file
+                format: int32
+                type: integer
+              lastRunTimes:
+                additionalProperties:
+                  format: date-time
+                  type: string
+                type: object
+              lastScaleTime:
+                format: date-time
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

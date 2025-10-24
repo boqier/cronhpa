@@ -1,0 +1,16 @@
+apiVersion: autoscaling.aiops.com/v1
+kind: CronHPA
+metadata:
+  labels:
+    app.kubernetes.io/name: cronhpa
+    app.kubernetes.io/managed-by: kustomize
+  name: cronhpa-sample
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: nginx-test
+  jobs:
+    - name: "scale-up"
+      schedule: "*/1 * * * *"
+      targetSize: 3

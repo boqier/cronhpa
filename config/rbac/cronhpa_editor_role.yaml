@@ -1,0 +1,27 @@
+# permissions for end users to edit cronhpas.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: cronhpa
+    app.kubernetes.io/managed-by: kustomize
+  name: cronhpa-editor-role
+rules:
+- apiGroups:
+  - autoscaling.aiops.com
+  resources:
+  - cronhpas
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - autoscaling.aiops.com
+  resources:
+  - cronhpas/status
+  verbs:
+  - get
